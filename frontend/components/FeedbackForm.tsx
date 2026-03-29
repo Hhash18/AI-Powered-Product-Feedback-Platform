@@ -80,6 +80,7 @@ export function FeedbackForm() {
         title: formData.title.trim(),
         description: formData.description.trim(),
         category: formData.category,
+        userName: formData.userName.trim() || undefined,
         userEmail: formData.userEmail.trim() || undefined,
         userType: 'User',
       });
