@@ -21,13 +21,20 @@ export class GeminiService {
 
   async analyzeAndCategorize(
     title: string,
-    description: string
+    description: string,
+    userCategory?: string
   ): Promise<AnalysisResult> {
+    const categoryContext = userCategory
+      ? `Note: The user has already categorized this as "${userCategory}". Use this context but still analyze if it fits better in another category.`
+      : '';
+
     const prompt = `
     You are a product feedback analyst. Analyze the following feedback and provide:
     1. Category: One of [Bug, Feature Request, Improvement, Documentation, Performance, Other]
     2. Priority: One of [Low, Medium, High, Critical]
     3. Summary: A concise 1-2 sentence summary
+
+    ${categoryContext}
 
     Feedback:
     Title: ${title}
@@ -50,15 +57,15 @@ export class GeminiService {
       const parsed = JSON.parse(jsonMatch[0]);
 
       return {
-        category: parsed.category || 'Other',
+        category: parsed.category || userCategory || 'Other',
         priority: parsed.priority || 'Medium',
         summary: parsed.summary || description.substring(0, 200),
       };
     } catch (error) {
       console.error('Error analyzing feedback with Gemini:', error);
-      // Return default values on error
+      // Return user's selection or default values on error
       return {
-        category: 'Other',
+        category: userCategory || 'Other',
         priority: 'Medium',
         summary: description.substring(0, 200),
       };
@@ -71,7 +78,7 @@ export class GeminiService {
     }
 
     const feedbackText = feedbackList
-      .map((f) => `- ${f.title}: ${f.description}`)
+      .map((f) => `- [${f.category}] ${f.title}: ${f.description}`)
       .join('\n');
 
     const prompt = `
@@ -80,9 +87,12 @@ export class GeminiService {
     ${feedbackText}
 
     Provide a brief summary of:
-    1. Main themes
-    2. Most common issues
-    3. Recommendations for the product team
+    1. Main themes and patterns
+    2. Most common categories and issues
+    3. Highest priority items
+    4. Top 3 recommendations for the product team
+
+    Keep the response concise but actionable.
     `;
 
     try {

@@ -7,6 +7,7 @@ export interface IFeedback extends Document {
   priority?: 'Low' | 'Medium' | 'High' | 'Critical';
   summary?: string;
   userEmail?: string;
+  userName?: string;
   userType?: 'User' | 'Admin' | 'Guest';
   status?: 'New' | 'Reviewed' | 'In Progress' | 'Completed' | 'Archived';
   aiGenerated: boolean;
@@ -27,6 +28,7 @@ const feedbackSchema = new Schema<IFeedback>(
       required: true,
       trim: true,
       maxlength: 5000,
+      minlength: 20,
     },
     category: {
       type: String,
@@ -38,7 +40,7 @@ const feedbackSchema = new Schema<IFeedback>(
         'Performance',
         'Other',
       ],
-      default: 'Feature Request',
+      default: 'Improvement',
     },
     priority: {
       type: String,
@@ -52,6 +54,12 @@ const feedbackSchema = new Schema<IFeedback>(
     userEmail: {
       type: String,
       lowercase: true,
+      sparse: true,
+    },
+    userName: {
+      type: String,
+      trim: true,
+      maxlength: 100,
     },
     userType: {
       type: String,

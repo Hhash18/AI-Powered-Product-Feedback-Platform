@@ -6,6 +6,7 @@ export interface IFeedback {
   priority?: 'Low' | 'Medium' | 'High' | 'Critical';
   summary?: string;
   userEmail?: string;
+  userName?: string;
   userType?: 'User' | 'Admin' | 'Guest';
   status?: 'New' | 'Reviewed' | 'In Progress' | 'Completed' | 'Archived';
   aiGenerated: boolean;

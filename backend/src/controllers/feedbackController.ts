@@ -6,7 +6,8 @@ export class FeedbackController {
   // Create new feedback
   static async create(req: Request, res: Response): Promise<void> {
     try {
-      const { title, description, userEmail, userType } = req.body;
+      const { title, description, category, userEmail, userName, userType } =
+        req.body;
 
       // Validate input
       if (!title || !description) {
@@ -16,19 +17,37 @@ export class FeedbackController {
         return;
       }
 
+      // Validate description minimum length
+      if (description.trim().length < 20) {
+        res.status(400).json({
+          error: 'Description must be at least 20 characters',
+        });
+        return;
+      }
+
+      // Validate title is not empty
+      if (!title.trim()) {
+        res.status(400).json({
+          error: 'Title cannot be empty',
+        });
+        return;
+      }
+
       // Analyze with Gemini
       const analysis = await geminiService.analyzeAndCategorize(
         title,
-        description
+        description,
+        category // Pass user-selected category to AI for enhanced analysis
       );
 
       // Create feedback document
       const feedback = new Feedback({
-        title,
-        description,
-        userEmail,
+        title: title.trim(),
+        description: description.trim(),
+        userEmail: userEmail?.trim() || undefined,
+        userName: userName?.trim() || undefined,
         userType: userType || 'Guest',
-        category: analysis.category,
+        category: category || analysis.category, // Use provided category or AI analysis
         priority: analysis.priority,
         summary: analysis.summary,
         aiGenerated: true,

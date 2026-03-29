@@ -85,11 +85,12 @@ export function FeedbackList({
                 </div>
               )}
 
-              <div className="mt-2 text-xs text-gray-500">
-                {item.userEmail && <p>From: {item.userEmail}</p>}
+              <div className="mt-2 text-xs text-gray-500 space-y-1">
+                {item.userName && <p>From: <strong>{item.userName}</strong></p>}
+                {item.userEmail && <p>Email: {item.userEmail}</p>}
                 <p>
-                  {new Date(item.createdAt).toLocaleDateString()}{' '}
-                  {new Date(item.createdAt).toLocaleTimeString()}
+                  Submitted {new Date(item.createdAt).toLocaleDateString()}{' '}
+                  at {new Date(item.createdAt).toLocaleTimeString()}
                 </p>
               </div>
             </div>

@@ -14,7 +14,9 @@ export const feedbackAPI = {
   create: async (data: {
     title: string;
     description: string;
+    category?: string;
     userEmail?: string;
+    userName?: string;
     userType?: string;
   }) => {
     const response = await apiClient.post('/feedback', data);
