@@ -38,7 +38,7 @@ export function FeedbackForm() {
 
       setMessage({
         type: 'success',
-        text: 'Thank you! Your feedback has been submitted successfully.',
+        text: '✓ Thank you! Your feedback has been submitted and will be reviewed by our team.',
       });
 
       setFormData({
@@ -46,6 +46,9 @@ export function FeedbackForm() {
         description: '',
         userEmail: '',
       });
+
+      // Hide message after 5 seconds
+      setTimeout(() => setMessage(null), 5000);
     } catch (error: any) {
       setMessage({
         type: 'error',
@@ -60,9 +63,10 @@ export function FeedbackForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Title Field */}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-          Feedback Title
+        <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-2">
+          What's your feedback about?
         </label>
         <input
           type="text"
@@ -71,17 +75,20 @@ export function FeedbackForm() {
           value={formData.title}
           onChange={handleChange}
           required
-          placeholder="Brief summary of your feedback"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border px-3 py-2"
+          placeholder="e.g., Login button is hard to find"
+          maxLength={200}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all placeholder:text-gray-500"
         />
+        <p className="text-xs text-gray-500 mt-1">{formData.title.length}/200</p>
       </div>
 
+      {/* Description Field */}
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-semibold text-gray-900 mb-2"
         >
-          Description
+          Tell us more
         </label>
         <textarea
           id="description"
@@ -89,15 +96,18 @@ export function FeedbackForm() {
           value={formData.description}
           onChange={handleChange}
           required
-          placeholder="Provide details about your feedback"
+          placeholder="Describe the issue, feature request, or improvement..."
           rows={5}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border px-3 py-2"
+          maxLength={5000}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none placeholder:text-gray-500"
         />
+        <p className="text-xs text-gray-500 mt-1">{formData.description.length}/5000</p>
       </div>
 
+      {/* Email Field */}
       <div>
-        <label htmlFor="userEmail" className="block text-sm font-medium text-gray-700">
-          Email (Optional)
+        <label htmlFor="userEmail" className="block text-sm font-semibold text-gray-900 mb-2">
+          Email <span className="text-gray-500 font-normal">(optional)</span>
         </label>
         <input
           type="email"
@@ -106,29 +116,46 @@ export function FeedbackForm() {
           value={formData.userEmail}
           onChange={handleChange}
           placeholder="your@email.com"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border px-3 py-2"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all placeholder:text-gray-500"
         />
+        <p className="text-xs text-gray-500 mt-1">
+          We'll use this only if we need to follow up about your feedback.
+        </p>
       </div>
 
+      {/* Success/Error Message */}
       {message && (
         <div
-          className={`p-4 rounded-md ${
+          className={`p-4 rounded-lg border transition-all ${
             message.type === 'success'
-              ? 'bg-green-50 text-green-800'
-              : 'bg-red-50 text-red-800'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-red-50 border-red-200 text-red-800'
           }`}
         >
-          {message.text}
+          <p className="text-sm font-medium">{message.text}</p>
         </div>
       )}
 
+      {/* Submit Button */}
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
+        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
       >
-        {isLoading ? 'Submitting...' : 'Submit Feedback'}
+        {isLoading ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            Submitting...
+          </span>
+        ) : (
+          'Submit Feedback'
+        )}
       </button>
+
+      {/* Privacy Notice */}
+      <p className="text-xs text-gray-600 text-center">
+        Your feedback is secure and private. We never share your email with third parties.
+      </p>
     </form>
   );
 }
