@@ -55,8 +55,8 @@ A lightweight internal tool that collects product feedback and feature requests 
 feedpulse/
 ├── frontend/                    # Next.js application
 │   ├── app/
-│   │   ├── page.tsx            # 👤 Public Feedback Form (No Auth)
-│   │   ├── dashboard/page.tsx  # 🔐 Admin Dashboard (Can add auth later)
+│   │   ├── page.tsx            # Public Feedback Form (No Auth)
+│   │   ├── dashboard/page.tsx  # Admin Dashboard (Can add auth later)
 │   │   ├── layout.tsx          # Root layout
 │   │   └── globals.css         # Global styles
 │   ├── components/
