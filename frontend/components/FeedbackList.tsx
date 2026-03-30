@@ -28,6 +28,18 @@ export function FeedbackList({
     }
   };
 
+  const getSentimentBadge = (sentiment?: string) => {
+    switch (sentiment) {
+      case 'Positive':
+        return { emoji: '😊', bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700' };
+      case 'Negative':
+        return { emoji: '😞', bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700' };
+      case 'Neutral':
+      default:
+        return { emoji: '😐', bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700' };
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'New':
@@ -62,9 +74,16 @@ export function FeedbackList({
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <h3 className="font-semibold text-lg text-gray-900">
-                {item.title}
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="font-semibold text-lg text-gray-900">
+                  {item.title}
+                </h3>
+                {item.sentiment && (
+                  <div className={`text-2xl p-1 rounded ${getSentimentBadge(item.sentiment).bg} border ${getSentimentBadge(item.sentiment).border}`}>
+                    {getSentimentBadge(item.sentiment).emoji}
+                  </div>
+                )}
+              </div>
               <p className="text-gray-600 mt-1">{item.description}</p>
 
               <div className="mt-3 flex flex-wrap gap-2">
@@ -77,7 +96,22 @@ export function FeedbackList({
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(item.status || 'New')}`}>
                   {item.status || 'New'}
                 </span>
+                {item.priorityScore && (
+                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                    Score: {item.priorityScore}/10
+                  </span>
+                )}
               </div>
+
+              {item.tags && item.tags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {item.tags.map((tag, index) => (
+                    <span key={index} className="px-2 py-1 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {item.summary && (
                 <div className="mt-3 p-3 bg-gray-50 rounded text-sm text-gray-700">

@@ -3,7 +3,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 interface AnalysisResult {
   category: string;
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  sentiment: 'Positive' | 'Neutral' | 'Negative';
+  priorityScore: number; // 1-10
   summary: string;
+  tags: string[];
 }
 
 export class GeminiService {
@@ -30,9 +33,11 @@ export class GeminiService {
 
     const prompt = `
     You are a product feedback analyst. Analyze the following feedback and provide:
-    1. Category: One of [Bug, Feature Request, Improvement, Documentation, Performance, Other]
-    2. Priority: One of [Low, Medium, High, Critical]
-    3. Summary: A concise 1-2 sentence summary
+    1. category: One of [Bug, Feature Request, Improvement, Other]
+    2. sentiment: One of [Positive, Neutral, Negative]
+    3. priority_score: A number from 1 (low) to 10 (critical)
+    4. summary: A concise 1-2 sentence summary
+    5. tags: An array of 2-4 relevant tags/keywords as strings
 
     ${categoryContext}
 
@@ -40,8 +45,8 @@ export class GeminiService {
     Title: ${title}
     Description: ${description}
 
-    Respond in JSON format ONLY with keys: category, priority, summary
-    Example: {"category": "Feature Request", "priority": "High", "summary": "User wants..."}
+    Respond in VALID JSON format ONLY with these exact keys: category, sentiment, priority_score, summary, tags
+    Example: {"category": "Feature Request", "sentiment": "Positive", "priority_score": 7, "summary": "User wants...", "tags": ["UI", "Performance"]}
     `;
 
     try {
@@ -56,18 +61,32 @@ export class GeminiService {
 
       const parsed = JSON.parse(jsonMatch[0]);
 
+      // Convert priority_score to priority level
+      const getPriorityLevel = (score: number): 'Low' | 'Medium' | 'High' | 'Critical' => {
+        if (score <= 3) return 'Low';
+        if (score <= 6) return 'Medium';
+        if (score <= 8) return 'High';
+        return 'Critical';
+      };
+
       return {
         category: parsed.category || userCategory || 'Other',
-        priority: parsed.priority || 'Medium',
+        sentiment: parsed.sentiment || 'Neutral',
+        priority: getPriorityLevel(parsed.priority_score || 5),
+        priorityScore: Math.max(1, Math.min(10, parsed.priority_score || 5)),
         summary: parsed.summary || description.substring(0, 200),
+        tags: Array.isArray(parsed.tags) ? parsed.tags.slice(0, 5) : [],
       };
     } catch (error) {
       console.error('Error analyzing feedback with Gemini:', error);
-      // Return user's selection or default values on error
+      // Return defaults on error - feedback still gets saved
       return {
         category: userCategory || 'Other',
+        sentiment: 'Neutral',
         priority: 'Medium',
+        priorityScore: 5,
         summary: description.substring(0, 200),
+        tags: [],
       };
     }
   }

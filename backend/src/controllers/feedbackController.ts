@@ -47,9 +47,12 @@ export class FeedbackController {
         userEmail: userEmail?.trim() || undefined,
         userName: userName?.trim() || undefined,
         userType: userType || 'Guest',
-        category: category || analysis.category, // Use provided category or AI analysis
+        category: category || analysis.category,
         priority: analysis.priority,
+        sentiment: analysis.sentiment,
+        priorityScore: analysis.priorityScore,
         summary: analysis.summary,
+        tags: analysis.tags,
         aiGenerated: true,
         status: 'New',
       });

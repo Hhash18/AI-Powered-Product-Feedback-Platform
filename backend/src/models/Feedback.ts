@@ -5,7 +5,10 @@ export interface IFeedback extends Document {
   description: string;
   category?: string;
   priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  sentiment?: 'Positive' | 'Neutral' | 'Negative';
+  priorityScore?: number; // 1-10
   summary?: string;
+  tags?: string[];
   userEmail?: string;
   userName?: string;
   userType?: 'User' | 'Admin' | 'Guest';
@@ -47,9 +50,24 @@ const feedbackSchema = new Schema<IFeedback>(
       enum: ['Low', 'Medium', 'High', 'Critical'],
       default: 'Medium',
     },
+    sentiment: {
+      type: String,
+      enum: ['Positive', 'Neutral', 'Negative'],
+      default: 'Neutral',
+    },
+    priorityScore: {
+      type: Number,
+      min: 1,
+      max: 10,
+      default: 5,
+    },
     summary: {
       type: String,
       maxlength: 500,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
     userEmail: {
       type: String,

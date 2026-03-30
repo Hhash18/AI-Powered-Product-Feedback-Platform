@@ -4,7 +4,10 @@ export interface IFeedback {
   description: string;
   category?: string;
   priority?: 'Low' | 'Medium' | 'High' | 'Critical';
+  sentiment?: 'Positive' | 'Neutral' | 'Negative';
+  priorityScore?: number;
   summary?: string;
+  tags?: string[];
   userEmail?: string;
   userName?: string;
   userType?: 'User' | 'Admin' | 'Guest';
