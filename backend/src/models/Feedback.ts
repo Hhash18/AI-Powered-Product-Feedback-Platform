@@ -1,102 +1,108 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IFeedback extends Document {
-  title: string;
-  description: string;
-  category?: string;
-  priority?: 'Low' | 'Medium' | 'High' | 'Critical';
-  sentiment?: 'Positive' | 'Neutral' | 'Negative';
-  priorityScore?: number; // 1-10
-  summary?: string;
-  tags?: string[];
-  userEmail?: string;
-  userName?: string;
-  userType?: 'User' | 'Admin' | 'Guest';
-  status?: 'New' | 'Reviewed' | 'In Progress' | 'Completed' | 'Archived';
-  aiGenerated: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+    title: string;
+    description: string;
+    category?: "Bug" | "Feature Request" | "Improvement" | "Other";
+    status?: "New" | "In Review" | "Resolved";
+    submitterName?: string;
+    submitterEmail?: string;
+    // AI fields — populated after Gemini responds
+    ai_category?: string;
+    ai_sentiment?: "Positive" | "Neutral" | "Negative";
+    ai_priority?: number; // 1-10
+    ai_summary?: string;
+    ai_tags?: string[];
+    ai_processed: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const feedbackSchema = new Schema<IFeedback>(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 200,
+    {
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 120,
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true,
+            minlength: 20,
+            maxlength: 5000,
+        },
+        category: {
+            type: String,
+            enum: ["Bug", "Feature Request", "Improvement", "Other"],
+            default: "Other",
+        },
+        status: {
+            type: String,
+            enum: ["New", "In Review", "Resolved"],
+            default: "New",
+        },
+        submitterName: {
+            type: String,
+            trim: true,
+            maxlength: 100,
+        },
+        submitterEmail: {
+            type: String,
+            lowercase: true,
+            sparse: true,
+            validate: {
+                validator: function (v: string) {
+                    if (!v) return true; // Optional field
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+                },
+                message: "Invalid email format",
+            },
+        },
+        // AI fields
+        ai_category: {
+            type: String,
+            trim: true,
+        },
+        ai_sentiment: {
+            type: String,
+            enum: ["Positive", "Neutral", "Negative"],
+            default: "Neutral",
+        },
+        ai_priority: {
+            type: Number,
+            min: 1,
+            max: 10,
+            default: 5,
+        },
+        ai_summary: {
+            type: String,
+            maxlength: 500,
+        },
+        ai_tags: {
+            type: [String],
+            default: [],
+        },
+        ai_processed: {
+            type: Boolean,
+            default: false,
+        },
     },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 5000,
-      minlength: 20,
+    {
+        timestamps: true,
     },
-    category: {
-      type: String,
-      enum: [
-        'Bug',
-        'Feature Request',
-        'Improvement',
-        'Documentation',
-        'Performance',
-        'Other',
-      ],
-      default: 'Improvement',
-    },
-    priority: {
-      type: String,
-      enum: ['Low', 'Medium', 'High', 'Critical'],
-      default: 'Medium',
-    },
-    sentiment: {
-      type: String,
-      enum: ['Positive', 'Neutral', 'Negative'],
-      default: 'Neutral',
-    },
-    priorityScore: {
-      type: Number,
-      min: 1,
-      max: 10,
-      default: 5,
-    },
-    summary: {
-      type: String,
-      maxlength: 500,
-    },
-    tags: {
-      type: [String],
-      default: [],
-    },
-    userEmail: {
-      type: String,
-      lowercase: true,
-      sparse: true,
-    },
-    userName: {
-      type: String,
-      trim: true,
-      maxlength: 100,
-    },
-    userType: {
-      type: String,
-      enum: ['User', 'Admin', 'Guest'],
-      default: 'Guest',
-    },
-    status: {
-      type: String,
-      enum: ['New', 'Reviewed', 'In Progress', 'Completed', 'Archived'],
-      default: 'New',
-    },
-    aiGenerated: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  {
-    timestamps: true,
-  }
 );
 
-export default mongoose.model<IFeedback>('Feedback', feedbackSchema);
+// Indexes for query performance (Requirement 5.2)
+feedbackSchema.index({ status: 1 });
+feedbackSchema.index({ category: 1 });
+feedbackSchema.index({ ai_priority: 1 });
+feedbackSchema.index({ createdAt: -1 });
+
+// Compound indexes for common queries
+feedbackSchema.index({ status: 1, createdAt: -1 });
+feedbackSchema.index({ category: 1, status: 1 });
+feedbackSchema.index({ ai_priority: 1, createdAt: -1 });
+
+export default mongoose.model<IFeedback>("Feedback", feedbackSchema);
