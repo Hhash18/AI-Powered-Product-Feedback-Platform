@@ -1,27 +1,13 @@
 'use client';
 
 import { FeedbackForm } from '@/components/FeedbackForm';
+import { SiteHeader } from '@/components/SiteHeader';
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">F</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">FeedPulse</span>
-          </div>
-          <a
-            href="/dashboard"
-            className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
-          >
-            Dashboard
-          </a>
-        </div>
-      </nav>
+      <SiteHeader />
 
       <div className="max-w-5xl mx-auto px-4 pt-24 pb-12">
         {/* Hero Section */}
@@ -158,13 +144,13 @@ export default function Home() {
         {/* CTA Section */}
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-4">
-            Curious about other feedback? Check out our dashboard to see what the community is saying.
+            Want to see all feedback? Admins can log in to view detailed analytics and manage submissions.
           </p>
           <a
             href="/dashboard"
             className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg"
           >
-            View All Feedback →
+            Admin Dashboard →
           </a>
         </div>
       </div>

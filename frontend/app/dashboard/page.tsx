@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { feedbackAPI } from '@/lib/api';
+import { auth } from '@/lib/auth';
 import { IFeedback } from '@/types/feedback';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { FeedbackList } from '@/components/FeedbackList';
 import { FeedbackFilters } from '@/components/FeedbackFilters';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 interface AnalyticsData {
   total: number;
@@ -18,13 +21,33 @@ interface UpdatedFeedbackItem extends IFeedback {
   _id: string;
 }
 
-export default function Dashboard() {
+export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  );
+}
+
+function Dashboard() {
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [feedback, setFeedback] = useState<UpdatedFeedbackItem[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [insights, setInsights] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [activeTab, setActiveTab] = useState<'feedback' | 'analytics' | 'insights'>('feedback');
+
+  useEffect(() => {
+    // Check authorization
+    setIsAuthorized(auth.isAuthenticated());
+  }, []);
+
+  const handleLogout = () => {
+    auth.logout();
+    router.push('/login');
+  };
 
   useEffect(() => {
     loadData();
@@ -84,20 +107,40 @@ export default function Dashboard() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <nav className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">F</span>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900">FeedPulse Admin</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="/"
+              className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            >
+              ← Back to Site
+            </a>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
       <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
+        {/* Page Title */}
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
               <p className="text-gray-600 mt-2">Manage and analyze product feedback</p>
             </div>
-            <a
-              href="/"
-              className="text-blue-600 hover:text-blue-800 font-semibold"
-            >
-              ← Back to Submit
-            </a>
           </div>
         </div>
 
