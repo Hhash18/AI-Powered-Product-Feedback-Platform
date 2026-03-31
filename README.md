@@ -138,7 +138,7 @@ npm run dev
 PORT=5001
 MONGODB_URI=mongodb://localhost:27017/feedpulse
 # OR for MongoDB Atlas:
-# MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0
+# MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/?appName=FeedPulse
 GEMINI_API_KEY=your_api_key_from_google_ai_studio
 JWT_SECRET=your_jwt_secret_key_here_change_in_production
 NODE_ENV=development
@@ -179,24 +179,29 @@ See [API.md](./API.md) for complete documentation.
 ## Screenshots
 
 ### 1. Public Feedback Submission Form
+
 ![Feedback Form](./screenshots/01-from.png)
+
 - **Location**: http://localhost:3000
 - **Features**:
-  - Clean form with Title, Description, Category fields
-  - Optional Name and Email fields
-  - Real-time character counters
-  - Success/Error messages after submission
-  - Mobile responsive design
+    - Clean form with Title, Description, Category fields
+    - Optional Name and Email fields
+    - Real-time character counters
+    - Success/Error messages after submission
+    - Mobile responsive design
 
 ### 2. Admin Dashboard
+
 ![Admin Dashboard](./screenshots/02-dashboard.png)
+
 - **Location**: http://localhost:3000/dashboard
 - **Features**:
-  - **Feedback Tab**: List of all submissions with sentiment badges, filters by Status/Category/Priority, inline editing, delete button
-  - **Analytics Tab**: Charts showing feedback breakdown by category, status, and priority with real-time statistics
-  - **AI Insights Tab**: AI-generated insights with recommendations for product improvements and summary of common themes
+    - **Feedback Tab**: List of all submissions with sentiment badges, filters by Status/Category/Priority, inline editing, delete button
+    - **Analytics Tab**: Charts showing feedback breakdown by category, status, and priority with real-time statistics
+    - **AI Insights Tab**: AI-generated insights with recommendations for product improvements and summary of common themes
 
 **Admin Credentials:**
+
 - Email: `admin@feedpulse.com`
 - Password: `FeedPulse@123`
 
