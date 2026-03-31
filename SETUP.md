@@ -3,6 +3,7 @@
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - MongoDB (local or Atlas)
 - Google Gemini API key
@@ -10,6 +11,7 @@
 ### Step 1: Get Your API Keys
 
 **Google Gemini API:**
+
 1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
 2. Create a new API key
 3. Copy it and save for later
@@ -98,23 +100,27 @@ feedpulse/
 ## API Endpoints
 
 ### Feedback Endpoints
+
 - `POST /api/feedback` - Submit new feedback
 - `GET /api/feedback` - Get all feedback (with optional filters)
-  - Query params: `status`, `category`, `priority`, `sort`
+    - Query params: `status`, `category`, `priority`, `sort`
 - `GET /api/feedback/:id` - Get feedback by ID
 - `PUT /api/feedback/:id` - Update feedback status/priority/category
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Analytics Endpoints
+
 - `GET /api/feedback/analytics` - Get feedback analytics
 - `GET /api/feedback/insights` - Get AI-generated insights
 
 ### Health Check
+
 - `GET /api/health` - Server health check
 
 ## Environment Variables
 
 ### Backend (.env)
+
 ```
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/feedpulse
@@ -123,6 +129,7 @@ NODE_ENV=development
 ```
 
 ### Frontend (.env.local)
+
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
@@ -135,9 +142,9 @@ If you want to use MongoDB Atlas instead of local MongoDB:
 2. Create a free account and cluster
 3. Get your connection string
 4. Update `.env`:
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/feedpulse
-   ```
+    ```
+    MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/?appName=FeedPulse
+    ```
 
 ## Docker Setup
 
@@ -158,6 +165,7 @@ docker-compose up
 ## Development Commands
 
 ### Backend
+
 ```bash
 npm run dev    # Start development server with hot reload
 npm run build  # Build TypeScript
@@ -166,6 +174,7 @@ npm run lint   # Run ESLint
 ```
 
 ### Frontend
+
 ```bash
 npm run dev    # Start development server
 npm run build  # Build for production
@@ -176,37 +185,44 @@ npm run lint   # Run ESLint
 ## Troubleshooting
 
 ### MongoDB Connection Error
+
 - Make sure MongoDB is running: `mongod`
 - Check connection string in `.env`
 - If using Atlas, ensure IP is whitelisted
 
 ### GEMINI_API_KEY Error
+
 - Get your key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 - Add it to `.env` file
 - Restart the backend server
 
 ### CORS Error
+
 - Make sure `NEXT_PUBLIC_API_URL` in frontend `.env.local` is correct
 - Make sure backend is running on the correct port
 
 ### Port Already in Use
+
 - Backend: Change PORT in `.env` or kill process on 5000
 - Frontend: Use `npm run dev -- -p 3001` to use different port
 
 ## Features
 
 ✅ **Feedback Submission**
+
 - Simple form for users to submit feedback
 - Email optional
 - Real-time AI categorization
 
 ✅ **AI Integration (Google Gemini)**
+
 - Auto-categorize feedback (Bug, Feature, Improvement, etc.)
 - Auto-prioritize (Low, Medium, High, Critical)
 - Generate summaries
 - Generate insights from all feedback
 
 ✅ **Admin Dashboard**
+
 - View all feedback
 - Filter by status, category, priority
 - Sort by date
@@ -215,6 +231,7 @@ npm run lint   # Run ESLint
 - Update feedback status
 
 ✅ **Analytics**
+
 - Total feedback count
 - Distribution by status
 - Distribution by category
