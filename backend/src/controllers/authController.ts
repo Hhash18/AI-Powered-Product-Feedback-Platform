@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const ADMIN_CREDENTIALS = {
     email: "admin@feedpulse.com",
-    password: "admin123",
+    password: "FeedPulse@123",
 };
 
 export class AuthController {

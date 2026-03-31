@@ -1,60 +1,54 @@
-// Simple auth utility for hardcoded admin credentials
+// Auth utility - calls backend for JWT token
 
-const ADMIN_EMAIL = 'admin@feedpulse.com';
-const ADMIN_PASSWORD = 'FeedPulse@123';
-const AUTH_TOKEN_KEY = 'feedpulse_auth_token';
+import axios from "axios";
 
-interface AuthToken {
-  email: string;
-  timestamp: number;
-}
+const ADMIN_EMAIL = "admin@feedpulse.com";
+const ADMIN_PASSWORD = "FeedPulse@123";
+const AUTH_TOKEN_KEY = "feedpulse_auth_token";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+
+const authClient = axios.create({
+    baseURL: `${API_BASE_URL}/api`,
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
 
 export const auth = {
-  login: (email: string, password: string): boolean => {
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      const token: AuthToken = {
-        email,
-        timestamp: Date.now(),
-      };
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(token));
-      }
-      return true;
-    }
-    return false;
-  },
+    login: async (email: string, password: string): Promise<boolean> => {
+        try {
+            const response = await authClient.post("/auth/login", { email, password });
+            if (response.data.success && response.data.data?.token) {
+                if (typeof window !== "undefined") {
+                    localStorage.setItem(AUTH_TOKEN_KEY, response.data.data.token);
+                }
+                return true;
+            }
+            return false;
+        } catch {
+            return false;
+        }
+    },
 
-  logout: (): void => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-    }
-  },
+    logout: (): void => {
+        if (typeof window !== "undefined") {
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+        }
+    },
 
-  isAuthenticated: (): boolean => {
-    if (typeof window === 'undefined') return false;
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!token) return false;
-    try {
-      const parsed = JSON.parse(token) as AuthToken;
-      return parsed.email === ADMIN_EMAIL;
-    } catch {
-      return false;
-    }
-  },
+    isAuthenticated: (): boolean => {
+        if (typeof window === "undefined") return false;
+        const token = localStorage.getItem(AUTH_TOKEN_KEY);
+        return !!token;
+    },
 
-  getToken: (): AuthToken | null => {
-    if (typeof window === 'undefined') return null;
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!token) return null;
-    try {
-      return JSON.parse(token) as AuthToken;
-    } catch {
-      return null;
-    }
-  },
+    getToken: (): string | null => {
+        if (typeof window === "undefined") return null;
+        return localStorage.getItem(AUTH_TOKEN_KEY);
+    },
 
-  getCredentials: () => ({
-    email: ADMIN_EMAIL,
-    password: ADMIN_PASSWORD,
-  }),
+    getCredentials: () => ({
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+    }),
 };

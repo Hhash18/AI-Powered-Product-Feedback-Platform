@@ -28,20 +28,22 @@ export default function LoginPage() {
         setError("");
         setIsLoading(true);
 
-        // Simulate network delay for better UX
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        if (auth.login(formData.email, formData.password)) {
-            router.push("/dashboard");
-        } else {
-            setError("Invalid email or password");
-            setFormData((prev) => ({
-                ...prev,
-                password: "",
-            }));
+        try {
+            const success = await auth.login(formData.email, formData.password);
+            if (success) {
+                router.push("/dashboard");
+            } else {
+                setError("Invalid email or password");
+                setFormData((prev) => ({
+                    ...prev,
+                    password: "",
+                }));
+            }
+        } catch {
+            setError("Login failed. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     const { email: demoEmail } = auth.getCredentials();

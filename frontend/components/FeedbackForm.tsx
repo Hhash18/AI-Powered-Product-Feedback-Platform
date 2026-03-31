@@ -74,7 +74,8 @@ export function FeedbackForm() {
         setIsLoading(true);
 
         try {
-            await feedbackAPI.create({
+            console.log("Submitting feedback to:", process.env.NEXT_PUBLIC_API_URL);
+            const response = await feedbackAPI.create({
                 title: formData.title.trim(),
                 description: formData.description.trim(),
                 category: formData.category,
@@ -82,6 +83,8 @@ export function FeedbackForm() {
                 userEmail: formData.userEmail.trim() || undefined,
                 userType: "User",
             });
+
+            console.log("Feedback submitted successfully:", response);
 
             setMessage({
                 type: "success",
@@ -99,9 +102,21 @@ export function FeedbackForm() {
             // Hide message after 5 seconds
             setTimeout(() => setMessage(null), 5000);
         } catch (error: any) {
+            console.error("Error submitting feedback:", error);
+
+            let errorMessage = "Failed to submit feedback. Please try again.";
+
+            if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
             setMessage({
                 type: "error",
-                text: error.response?.data?.error || "Failed to submit feedback. Please try again.",
+                text: errorMessage,
             });
         } finally {
             setIsLoading(false);
