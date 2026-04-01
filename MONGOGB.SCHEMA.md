@@ -1,4 +1,4 @@
-# Requirement 5 — MongoDB Schema & Data Design
+# Requirement — MongoDB Schema & Data Design
 
 Complete MongoDB schema implementation with proper validation, indexes, and timestamps.
 
@@ -6,7 +6,7 @@ Complete MongoDB schema implementation with proper validation, indexes, and time
 
 ## Feedback Collection Schema
 
-### 5.1 Feedback Schema Specification
+### Feedback Schema Specification
 
 **File:** `backend/src/models/Feedback.ts`
 
@@ -120,7 +120,7 @@ const feedbackSchema = new Schema<IFeedback>(
 
 ---
 
-## 5.2 MongoDB Indexes for Query Performance
+## MongoDB Indexes for Query Performance
 
 ### Indexes Created
 
@@ -157,7 +157,7 @@ feedbackSchema.index({ ai_priority: 1, createdAt: -1 }); // Priority + recency
 
 ---
 
-## 5.3 Timestamps Management
+## Timestamps Management
 
 ### Automatic Timestamps
 
@@ -427,7 +427,7 @@ With indexes (B-tree):
 
 ✅ **Requirement 5 Complete:**
 
-### 5.1 Schema Specification
+### Schema Specification
 
 - ✅ Title: required, max 120 chars
 - ✅ Description: required, min 20 chars
@@ -438,7 +438,7 @@ With indexes (B-tree):
 - ✅ ai_processed: Boolean with default false
 - ✅ Timestamps: Auto-managed
 
-### 5.2 Indexes
+### Indexes
 
 - ✅ Index on status
 - ✅ Index on category
@@ -447,7 +447,7 @@ With indexes (B-tree):
 - ✅ Compound indexes for common queries
 - ✅ Performance optimized for filtering, sorting, and pagination
 
-### 5.3 Timestamps
+### Timestamps
 
 - ✅ createdAt: Auto-assigned on creation
 - ✅ updatedAt: Auto-assigned on creation, updated on modifications

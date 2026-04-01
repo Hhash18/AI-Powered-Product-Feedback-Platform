@@ -256,6 +256,7 @@ A: Absolutely! It's designed to be forked and customized.
 
 📖 For setup help: See [SETUP.md](./SETUP.md)
 📚 For API docs: See [API.md](./API.md)
+📊 For admin dashboard: See [ADMIN_DASHBOARD.md](./ADMIN_DASHBOARD.md)
 🐛 For issues: Create a GitHub issue
 
 ## License
